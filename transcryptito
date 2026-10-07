@@ -38,16 +38,16 @@ readonly COMMAND_NAME
 ##### FUNCTIONS
 
 # load encryption password
-# by default is loaded from TRANSCRYPT_PASSWORD env vars
+# by default is loaded from TRANSCRYPTITO_PASSWORD env vars
 load_password() {
 	local context_config_group=${1:-}
 	local context_name=${context_config_group#.}
-	local context_envvar='TRANSCRYPT_PASSWORD'
-	local password=${TRANSCRYPT_PASSWORD:-}
+	local context_envvar='TRANSCRYPTITO_PASSWORD'
+	local password=${TRANSCRYPTITO_PASSWORD:-}
 
-	# Prefer context-specific env var, falling back to TRANSCRYPT_PASSWORD
+	# Prefer context-specific env var, falling back to TRANSCRYPTITO_PASSWORD
 	if [[ $context_name ]]; then
-		context_envvar="TRANSCRYPT_PASSWORD_$(echo "$context_name" | tr '[:lower:]-' '[:upper:]_')"
+		context_envvar="TRANSCRYPTITO_PASSWORD_$(echo "$context_name" | tr '[:lower:]-' '[:upper:]_')"
 		password=${!context_envvar:-$password}
 	fi
 
@@ -58,7 +58,7 @@ load_password() {
 		printf '\n' >&2
 	fi
 
-	[[ $password ]] || die 1 'no password was specified; set %s or TRANSCRYPT_PASSWORD' "$context_envvar"
+	[[ $password ]] || die 1 'no password was specified; set %s or TRANSCRYPTITO_PASSWORD' "$context_envvar"
 	echo "$password"
 }
 
@@ -561,9 +561,9 @@ set_password_env_for_context() {
 	local password_value=$1
 	local context_config_group=${2:-}
 	local context_name=${context_config_group#.}
-	local context_envvar='TRANSCRYPT_PASSWORD'
+	local context_envvar='TRANSCRYPTITO_PASSWORD'
 	if [[ $context_name ]]; then
-		context_envvar="TRANSCRYPT_PASSWORD_$(echo "$context_name" | tr '[:lower:]-' '[:upper:]_')"
+		context_envvar="TRANSCRYPTITO_PASSWORD_$(echo "$context_name" | tr '[:lower:]-' '[:upper:]_')"
 	fi
 	export "$context_envvar=$password_value"
 }
@@ -696,9 +696,9 @@ save_configuration() {
 		: # Bypass safety check on rekey
 	elif is_item_in_array "$CONTEXT" ${CONFIGURED_CONTEXTS}; then
 		if [[ "$CONTEXT" = 'default' ]]; then
-			die 1 "the current repository is already configured; see 'transcrypt --display'"
+			die 1 "the current repository is already configured; see 'transcryptito --display'"
 		else
-			die 1 "the current repository is already configured${CONTEXT_DESCRIPTION}; see 'transcrypt --context=$CONTEXT --display'"
+			die 1 "the current repository is already configured${CONTEXT_DESCRIPTION}; see 'transcryptito --context=$CONTEXT --display'"
 		fi
 	fi
 
@@ -774,9 +774,9 @@ display_configuration() {
 	fi
 	printf "Copy and paste the following command to initialize a cloned repository%s:\n\n" "$CONTEXT_DESCRIPTION"
 	if [[ $CONTEXT != 'default' ]]; then
-		printf "  transcrypt -C $CONTEXT -c %s -p '%s'\n" "$current_cipher" "$escaped_password"
+		printf "  transcryptito -C $CONTEXT -c %s -p '%s'\n" "$current_cipher" "$escaped_password"
 	else
-		printf "  transcrypt -c %s -p '%s'\n" "$current_cipher" "$escaped_password"
+		printf "  transcryptito -c %s -p '%s'\n" "$current_cipher" "$escaped_password"
 	fi
 }
 
@@ -1298,7 +1298,7 @@ help() {
 
 		     -p, --password=PASSWORD
 		            the password to derive the key from;
-		            defaults to TRANSCRYPT_PASSWORD envvar, else prompts
+		            defaults to TRANSCRYPTITO_PASSWORD envvar, else prompts
 
 		     --set-openssl-path=PATH_TO_OPENSSL
 		            use OpenSSL at this path; defaults to 'openssl' in \$PATH
@@ -1369,7 +1369,7 @@ help() {
 		     sponding option flags were not given.
 
 		         $ cd <path-to-your-repo>/
-		         $ transcrypt
+		         $ transcryptito
 
 		     Once  a  repository has been configured with transcrypt, you can trans-
 		     parently encrypt files by applying the "crypt" filter,  diff and  merge
@@ -1377,7 +1377,7 @@ help() {
 		     matches  a file in your  repository,  the file  will  be  transparently
 		     encrypted once you stage and commit it:
 
-		         $ transcrypt --add sensitive_file
+		         $ transcryptito --add sensitive_file
 
 		         $ cat .gitattributes
 		         sensitive_file  filter=crypt diff=crypt merge=crypt
@@ -1408,10 +1408,10 @@ help() {
 		     For example, to encrypt a file 'top-secret' in a "super" context:
 
 		         # Initialise a new "super" context, and set a different password
-		         $ transcrypt --context=super
+		         $ transcryptito --context=super
 
 		         # Add a pattern to .gitattributes with "crypt-super" values
-		         $ transcrypt --context=super --add=top-secret
+		         $ transcryptito --context=super --add=top-secret
 
 		         $ cat .gitattributes
 		         top-secret filter=crypt-super diff=crypt-super merge=crypt-super
@@ -1421,10 +1421,10 @@ help() {
 		         $ git commit -m "Add top secret file for super-users only"
 
 		         # List all contexts
-		         $ transcrypt --list-contexts
+		         $ transcryptito --list-contexts
 
 		         # Display the cipher and password for the "super" context
-		         $ transcrypt --context=super --display
+		         $ transcryptito --context=super --display
 
 		AUTHOR
 		     Aaron Bull Schaefer <aaron@elasticdog.com>

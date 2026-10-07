@@ -40,11 +40,11 @@ function cleanup_all {
 }
 
 function init_transcrypt {
-  "$BATS_TEST_DIRNAME"/../transcrypt --cipher=aes-256-cbc --password='abc 123' --yes
+  "$BATS_TEST_DIRNAME"/../transcryptito --cipher=aes-256-cbc --password='abc 123' --yes
 }
 
 function uninstall_transcrypt {
-  "$BATS_TEST_DIRNAME"/../transcrypt --uninstall --yes
+  "$BATS_TEST_DIRNAME"/../transcryptito --uninstall --yes
 }
 
 function encrypt_named_file {
@@ -65,8 +65,8 @@ function encrypt_named_file {
 
 function setup {
   pushd "$BATS_TEST_DIRNAME" || exit 1
-  export TRANSCRYPT_PASSWORD='abc 123'
-  export TRANSCRYPT_PASSWORD_SUPER_SECRET='321cba'
+  export TRANSCRYPTITO_PASSWORD='abc 123'
+  export TRANSCRYPTITO_PASSWORD_SUPER_SECRET='321cba'
   init_git_repo
   if [[ ! "$SETUP_SKIP_INIT_TRANSCRYPT" ]]; then
     init_transcrypt
@@ -74,8 +74,8 @@ function setup {
 }
 
 function teardown {
-  unset TRANSCRYPT_PASSWORD
-  unset TRANSCRYPT_PASSWORD_SUPER_SECRET
+  unset TRANSCRYPTITO_PASSWORD
+  unset TRANSCRYPTITO_PASSWORD_SUPER_SECRET
   cleanup_all
   popd || exit 1
 }

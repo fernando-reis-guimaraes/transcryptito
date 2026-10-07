@@ -23,7 +23,7 @@ The transcrypt source code and full documentation may be downloaded from
 
   * `-p`, `--password`=<password>:
     the password to derive the key from;
-    defaults to TRANSCRYPT_PASSWORD envvar, else prompts
+    defaults to TRANSCRYPTITO_PASSWORD envvar, else prompts
 
   * `--set-openssl-path`=<path_to_openssl>:
     use OpenSSL at this path; defaults to 'openssl' in $PATH

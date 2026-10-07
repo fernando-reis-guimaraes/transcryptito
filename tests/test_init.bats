@@ -9,7 +9,7 @@ SETUP_SKIP_INIT_TRANSCRYPT=1
 
 @test "init: works at all" {
   # Use literal command not function to confirm command works at least once
-  run ../transcrypt --cipher=aes-256-cbc --password='abc 123' --yes
+  run ../transcryptito --cipher=aes-256-cbc --password='abc 123' --yes
   [ "$status" -eq 0 ]
   [[ "${output}" = *"The repository has been successfully configured by transcrypt."* ]]
 }
@@ -29,7 +29,7 @@ SETUP_SKIP_INIT_TRANSCRYPT=1
 
 @test "init: applies git config" {
   init_transcrypt
-  VERSION=$(../transcrypt -v | awk '{print $2}')
+  VERSION=$(../transcryptito -v | awk '{print $2}')
 
   [ "$(git config --get transcrypt.version)" = "$VERSION" ]
   [ "$(git config --get transcrypt.cipher)" = "aes-256-cbc" ]
@@ -55,11 +55,11 @@ SETUP_SKIP_INIT_TRANSCRYPT=1
   [ "$(git config --get alias.add-crypt)" = '!"$(git config transcrypt.crypt-dir 2>/dev/null || printf %s/crypt ""$(git rev-parse --git-common-dir)"")"/transcrypt --add' ]
 }
 
-@test "init: show details for --display prompts if TRANSCRYPT_PASSWORD is unset" {
+@test "init: show details for --display prompts if TRANSCRYPTITO_PASSWORD is unset" {
   init_transcrypt
-  VERSION=$(../transcrypt -v | awk '{print $2}')
+  VERSION=$(../transcryptito -v | awk '{print $2}')
 
-  run bash -c 'unset TRANSCRYPT_PASSWORD; printf "abc 123\n" | ../transcrypt --display'
+  run bash -c 'unset TRANSCRYPTITO_PASSWORD; printf "abc 123\n" | ../transcryptito --display'
   [ "$status" -eq 0 ]
   [[ "${output}" = *"The current repository was configured using transcrypt version $VERSION"* ]]
   [[ "${output}" = *"  CIPHER:   aes-256-cbc"* ]]
@@ -68,26 +68,26 @@ SETUP_SKIP_INIT_TRANSCRYPT=1
 
 @test "init: show details for --display" {
   init_transcrypt
-  VERSION=$(../transcrypt -v | awk '{print $2}')
+  VERSION=$(../transcryptito -v | awk '{print $2}')
 
-  run ../transcrypt --display
+  run ../transcryptito --display
   [ "$status" -eq 0 ]
   [[ "${output}" = *"The current repository was configured using transcrypt version $VERSION"* ]]
   [[ "${output}" = *"  CIPHER:   aes-256-cbc"* ]]
   [[ "${output}" = *"  PASSWORD: abc 123"* ]]
-  [[ "${output}" = *"  transcrypt -c aes-256-cbc -p 'abc 123'"* ]]
+  [[ "${output}" = *"  transcryptito -c aes-256-cbc -p 'abc 123'"* ]]
 }
 
 @test "init: show details for -d" {
   init_transcrypt
-  VERSION=$(../transcrypt -v | awk '{print $2}')
+  VERSION=$(../transcryptito -v | awk '{print $2}')
 
-  run ../transcrypt -d
+  run ../transcryptito -d
   [ "$status" -eq 0 ]
   [[ "${output}" = *"The current repository was configured using transcrypt version $VERSION"* ]]
   [[ "${output}" = *"  CIPHER:   aes-256-cbc"* ]]
   [[ "${output}" = *"  PASSWORD: abc 123"* ]]
-  [[ "${output}" = *"  transcrypt -c aes-256-cbc -p 'abc 123'"* ]]
+  [[ "${output}" = *"  transcryptito -c aes-256-cbc -p 'abc 123'"* ]]
 }
 
 @test "init: respects core.hooksPath setting" {
@@ -98,13 +98,13 @@ SETUP_SKIP_INIT_TRANSCRYPT=1
   [ -d .git/myhooks ]
   [ -f .git/myhooks/pre-commit ]
 
-  VERSION=$(../transcrypt -v | awk '{print $2}')
-  run ../transcrypt --display
+  VERSION=$(../transcryptito -v | awk '{print $2}')
+  run ../transcryptito --display
   [ "$status" -eq 0 ]
   [[ "${output}" = *"The current repository was configured using transcrypt version $VERSION"* ]]
   [[ "${output}" = *"  CIPHER:   aes-256-cbc"* ]]
   [[ "${output}" = *"  PASSWORD: abc 123"* ]]
-  [[ "${output}" = *"  transcrypt -c aes-256-cbc -p 'abc 123'"* ]]
+  [[ "${output}" = *"  transcryptito -c aes-256-cbc -p 'abc 123'"* ]]
 }
 
 @test "init: transcrypt.openssl-path config setting defaults to 'openssl'" {
@@ -113,7 +113,7 @@ SETUP_SKIP_INIT_TRANSCRYPT=1
 }
 
 @test "init: --set-openssl-path is applied during init" {
-  run ../transcrypt --cipher=aes-256-cbc --password='abc 123' --yes --set-openssl-path=/test/path
+  run ../transcryptito --cipher=aes-256-cbc --password='abc 123' --yes --set-openssl-path=/test/path
   [ "$(git config --get transcrypt.openssl-path)" = "/test/path" ]
 }
 
@@ -124,7 +124,7 @@ SETUP_SKIP_INIT_TRANSCRYPT=1
   # Set openssl path
   FULL_OPENSSL_PATH=$(which openssl)
 
-  run ../transcrypt --upgrade --yes --set-openssl-path="$FULL_OPENSSL_PATH"
+  run ../transcryptito --upgrade --yes --set-openssl-path="$FULL_OPENSSL_PATH"
   [ "$(git config --get transcrypt.openssl-path)" = "$FULL_OPENSSL_PATH" ]
   [ ! "$(git config --get transcrypt.openssl-path)" = 'openssl' ]
 }
@@ -135,10 +135,10 @@ SETUP_SKIP_INIT_TRANSCRYPT=1
 
   # Set openssl path
   FULL_OPENSSL_PATH=$(which openssl)
-  run ../transcrypt --set-openssl-path="$FULL_OPENSSL_PATH"'' --yes
+  run ../transcryptito --set-openssl-path="$FULL_OPENSSL_PATH"'' --yes
 
   # Retain transcrypt.openssl-path config setting on upgrade
-  run ../transcrypt --upgrade --yes
+  run ../transcryptito --upgrade --yes
   [ "$(git config --get transcrypt.openssl-path)" = "$FULL_OPENSSL_PATH" ]
   [ ! "$(git config --get transcrypt.openssl-path)" = 'openssl' ]
 }
@@ -177,7 +177,7 @@ SETUP_SKIP_INIT_TRANSCRYPT=1
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "$SECRET_CONTENT" ]
 
-  run ../transcrypt --show-raw sensitive_file
+  run ../transcryptito --show-raw sensitive_file
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "==> sensitive_file <==" ]
   [ "${lines[1]}" = "$SECRET_CONTENT_ENC" ]
@@ -196,9 +196,9 @@ SETUP_SKIP_INIT_TRANSCRYPT=1
   git reset --hard
 
   # Init transcrypt with wrong password, command fails with error message
-  run "$BATS_TEST_DIRNAME"/../transcrypt --cipher=aes-256-cbc --password='WRONG' --yes
+  run "$BATS_TEST_DIRNAME"/../transcryptito --cipher=aes-256-cbc --password='WRONG' --yes
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "transcrypt: Unexpected new dirty files in the repository when configured by transcrypt, please check your password." ]
+  [ "${lines[0]}" = "transcryptito: Unexpected new dirty files in the repository when configured by transcrypt, please check your password." ]
 }
 
 @test "crypt: warn on incorrect password as indicated by dirty files after init when forced" {
@@ -219,9 +219,9 @@ SETUP_SKIP_INIT_TRANSCRYPT=1
   git add dirty_file
 
   # Force init transcrypt with wrong password, command fails with error message
-  run "$BATS_TEST_DIRNAME"/../transcrypt --force --cipher=aes-256-cbc --password='WRONG' --yes
+  run "$BATS_TEST_DIRNAME"/../transcryptito --force --cipher=aes-256-cbc --password='WRONG' --yes
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "transcrypt: Unexpected new dirty files in the repository when configured by transcrypt, please check your password." ]
+  [ "${lines[0]}" = "transcryptito: Unexpected new dirty files in the repository when configured by transcrypt, please check your password." ]
 
   rm dirty_file
 }

@@ -31,7 +31,7 @@ SECRET_CONTENT_ENC="U2FsdGVkX1/6ilR0PmJpAyCF7iG3+k4aBwbgVd48WaQXznsg42nXbQrlWsf/
   git repack
 
   # Flush credentials
-  run ../transcrypt -f --yes
+  run ../transcryptito -f --yes
   [ "$status" -eq 0 ]
 
   # Confirm working copy file is encrypted
@@ -79,7 +79,7 @@ SECRET_CONTENT_ENC="U2FsdGVkX1/6ilR0PmJpAyCF7iG3+k4aBwbgVd48WaQXznsg42nXbQrlWsf/
   git repack
 
   # Uninstall
-  run ../transcrypt --uninstall --yes
+  run ../transcryptito --uninstall --yes
   [ "$status" -eq 0 ]
 
   # Confirm working copy file remains unencrypted (per uninstall contract)

@@ -1,4 +1,4 @@
-# uma-transcrypt
+# transcryptito
 
 This repository is a fork of [elasticdog/transcrypt](https://github.com/elasticdog/transcrypt).
 
@@ -9,20 +9,20 @@ It keeps the same core goal (transparent Git clean/smudge encryption) with fork-
 Compared to upstream, this fork:
 
 - loads passwords from environment variables instead of reading/storing them in local git config
-- supports context-specific variables using `TRANSCRYPT_PASSWORD_<CONTEXT>`
-- prompts for password at runtime (silent input) when env vars are unset for direct `uma-transcrypt` usage
+- supports context-specific variables using `TRANSCRYPTITO_PASSWORD_<CONTEXT>`
+- prompts for password at runtime (silent input) when env vars are unset for direct `transcryptito` usage
 - avoids persisting passwords in `.git/config`
 
 Examples:
 
 ```bash
 # default context
-export TRANSCRYPT_PASSWORD='abc 123'
-uma-transcrypt --display
+export TRANSCRYPTITO_PASSWORD='abc 123'
+transcryptito --display
 
 # named context: super-secret
-export TRANSCRYPT_PASSWORD_SUPER_SECRET='321cba'
-uma-transcrypt --context=super-secret --display
+export TRANSCRYPTITO_PASSWORD_SUPER_SECRET='321cba'
+transcryptito --context=super-secret --display
 ```
 
 ## Build, validate, and use this fork
